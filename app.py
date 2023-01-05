@@ -6,7 +6,7 @@ import plotly.express as px
 
 
 DATA_URL = (
-    "C:/Users/Atharva/Desktop/Project/project 2/streamlit-nyc/Motor_Vehicle_Collisions_-_Crashes.csv"
+    "Motor_Vehicle_Collisions_-_Crashes.csv"
 )
 
 st.title("Motor Vehicle Collisions in New York City")
@@ -70,15 +70,20 @@ st.write(fig)
 st.header("Top 5 dangerous streets by affected type")
 select=st.selectbox('Affected type of people', ['Pedestrians', 'Cyclists', 'Motorists'])
 
-if select == 'Pedestrains':
-    st.write(original_data.query("injured_pedstrains >=1")[["on_street_name", "injured_pedstrains"]].sort_values(by=['injured_pedstrains'], ascending=False).dropna(how='any')[:5])
+selectbox_dict = {
+    'Pedestrians': 'injured_pedestrians',
+    'Cyclists': 'injured_cyclists',
+    'Motorists': 'injured_motorists'
+}
 
-elif select == 'Cyclists':
-    st.write(original_data.query("injured_cyclists >=1")[["on_street_name", "injured_cyclists"]].sort_values(by=['injured_cyclistss'], ascending=False).dropna(how='any')[:5])
-
-else:
-    st.write(original_data.query("injured_motorists >=1")[["on_street_name", "injured_motorists"]].sort_values(by=['injured_motorists'], ascending=False).dropna(how='any')[:5])
-
+injured_type = selectbox_dict[select]
+st.write(
+    original_data.query(f"{injured_type} >=1")[
+        ["on_street_name", injured_type]
+        ]
+        .sort_values(by=[injured_type], ascending=False)
+        .dropna(how="any")[:5]
+)
 
 if st.checkbox("Show Raw Data", False):
 	st.subheader('Raw Data')
